@@ -1,0 +1,7 @@
+- generic [ref=e5]:
+  - heading "欢迎使用 Lemma" [level=1] [ref=e6]
+  - paragraph [ref=e7]: Every Theorem Begins with a Lemma
+  - paragraph [ref=e8]: 基于 Claude 的学术写作桌面软件。无需安装 Claude Code，开箱即用。
+  - button "开始设置" [ref=e9] [cursor=pointer]:
+    - text: 开始设置
+    - img [ref=e10]

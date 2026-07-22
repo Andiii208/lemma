@@ -1,0 +1,197 @@
+# UltraMath Agent 数学建模竞赛领域配置
+# 兼容模式：与旧版 UltraMathAgent 的 Phase/PhaseResult 枚举对齐
+
+id: math-modeling
+name: 数学建模竞赛
+description: CUMCM/APMCM 数学建模竞赛自动求解
+version: "2.0"
+
+phases:
+  - id: idle
+    name: 空闲
+    order: -1
+    progress: 0
+    transition: {pass: init}
+
+  - id: init
+    name: 初始化
+    order: 0
+    progress: 5
+    transition: {pass: analysis, fail: init}
+
+  - id: analysis
+    name: 题目分析
+    order: 1
+    progress: 15
+    transition: {pass: derivation, fail: analysis}
+
+  - id: derivation
+    name: 数学推导
+    order: 2
+    progress: 30
+    transition: {pass: ontology, fail: derivation}
+
+  - id: ontology
+    name: 本体构造
+    order: 3
+    progress: 40
+    transition: {pass: coding, fail: ontology}
+
+  - id: coding
+    name: 代码实现
+    order: 4
+    progress: 55
+    transition: {pass: testing, fail: coding}
+
+  - id: testing
+    name: 测试验证
+    order: 5
+    progress: 65
+    transition: {pass: writing, fail: coding}
+
+  - id: writing
+    name: 论文写作
+    order: 6
+    progress: 80
+    transition: {pass: review, fail: writing}
+
+  - id: review
+    name: 交叉审稿
+    order: 7
+    progress: 90
+    transition: {pass: done, fail: writing}
+
+  - id: done
+    name: 完成
+    order: 8
+    progress: 100
+
+roles:
+  - id: lead
+    name: 团队指挥
+    emoji: 🎯
+    temperature: 0.5
+    tools: [file_manager, quality_checker, source_tracker, evidence_map]
+  - id: math
+    name: 数学家
+    emoji: 🧮
+    temperature: 0.8
+    tools: [file_manager]
+  - id: engineer
+    name: 工程师
+    emoji: 💻
+    temperature: 0.3
+    tools: [code_executor, file_manager, figure_generator, equation_solver]
+  - id: reviewer
+    name: 审稿人
+    emoji: 📝
+    temperature: 0.4
+    tools: [file_manager, quality_checker, latex_compiler]
+  - id: writer
+    name: 作家
+    emoji: ✍️
+    temperature: 0.6
+    tools: [file_manager, latex_compiler]
+  - id: verifier
+    name: 验算员
+    emoji: 🔍
+    temperature: 0.2
+    tools: [code_executor, file_manager]
+
+directories:
+  input: 题目
+  output: 求解
+  paper: 论文
+  data: 数据
+
+validators:
+  - phase: ontology
+    check: json
+    path: "{output_dir}/problem-ontology.json"
+  - phase: coding
+    check: files_exist
+    glob: "{output_dir}/*.py"
+  - phase: writing
+    check: files_exist
+    glob: "{paper_dir}/*.tex"
+
+phase_handlers:
+  init: |
+    以下是待求解的数学建模竞赛题目：
+    
+    {input_text}
+    
+    请确认已读取题目，准备进入分析阶段。
+    
+    {context_sections}
+  analysis: |
+    请分析这个数学建模竞赛题目。判断题目类型（优化/预测/评价/图论/机理分析），
+    列出需要求解的子问题，初步评估难度，并建议适用的数学方法。
+
+    ## 工具使用
+    - 使用 source_tracker register 注册题目来源（source_id="problem", source_type="primary", url=题目文件路径）
+    - 使用 evidence_map add_node 创建根节点（node_id="root", question=题目核心问题）
+
+    {context_sections}
+  derivation: |
+    请作为数学家，对这个题目进行完整的数学推导。
+    生成3个不同的建模方案，评估每个方案的优劣，选择最优方案进行详细推导。
+    输出包括：假设、符号定义、目标函数、约束条件、求解算法。
+
+    ## 工具使用
+    - 对每个建模方案：使用 evidence_map add_node 创建子节点（parent_id="root"）
+    - 每个推导步骤的公式断言：使用 source_tracker bind 绑定到对应数学定理/教材来源
+    - 标注每个叶节点的 confidence（high/medium/low）和 is_atomic 状态
+    - 每个事实性断言标注 [fact] 或 [inference]
+
+    {context_sections}
+  ontology: |
+    请基于前面的数学推导，构建问题本体。输出 JSON 格式，包括：
+    问题定义、集合与实体、参数（含单位和量纲）、约束条件、目标函数。
+
+    {context_sections}
+  coding: |
+    请作为工程师，基于数学推导编写 Python 求解代码。要求：
+    1. 为每个子问题创建独立的求解脚本
+    2. 包含完整的数值计算和结果输出
+    3. 生成出版级质量的图表
+    4. 输出 CSV 结果文件
+    请将代码保存到 求解/ 目录。
+
+    ## 工具使用
+    - 使用 source_tracker register 注册每个脚本文件为来源（source_type="primary"）
+    - 使用 source_tracker bind 将数值结果绑定到对应代码文件
+
+    {context_sections}
+  testing: |
+    请测试求解目录中的所有 Python 文件，运行并修复发现的问题。
+
+    {context_sections}
+  writing: |
+    请作为作家，撰写完整的 LaTeX 论文。要求：
+    1. 摘要每问有具体数值结果
+    2. 完整的章节结构
+    3. 引用求解目录中的图表
+    4. 保存到 论文/ 目录
+
+    ## 来源纪律
+    - 每个数值结果标注 [fact]（来自求解目录）或 [inference]（基于结果的推断）
+    - 使用 source_tracker bind 将论文中的数据断言绑定到求解目录的对应文件
+
+    {context_sections}
+  review: |
+    请作为审稿人，对整个项目进行五维度评分卡审稿。检查：
+    1. 数学推导的严谨性
+    2. 代码的可复现性
+    3. 论文的叙事质量
+    4. 图表的专业性
+    5. 创造性
+    给出评分和具体修改建议。
+
+    ## 审查工具
+    - 使用 source_tracker audit 检查所有断言-来源绑定完整性
+    - 使用 evidence_map audit 检查置信度与来源数的匹配（High 需 ≥2 来源）
+    - 对每个 [fact] 标签：验证来源可独立验证
+    - 对每个 [inference] 标签：确认已标注而非遗漏
+
+    {context_sections}

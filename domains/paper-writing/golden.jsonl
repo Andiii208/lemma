@@ -1,0 +1,3 @@
+{"input": "撰写一篇关于机器学习在医学诊断中应用的综述论文。", "expected_phases": ["research", "outline", "writing"], "min_quality_score": 0.6}
+{"input": "撰写一篇关于区块链技术对金融行业影响的学术论文。", "expected_phases": ["research", "outline", "writing"], "min_quality_score": 0.6}
+{"input": "撰写一篇关于光伏材料最新研究进展的综述。", "expected_phases": ["research", "outline", "writing"], "min_quality_score": 0.6}

@@ -1,0 +1,2 @@
+{"input": "撰写一份关于牛顿第二定律验证的实验报告。", "expected_phases": ["init", "method", "analysis", "writing"], "min_quality_score": 0.6}
+{"input": "撰写一份关于酸碱滴定实验的报告。", "expected_phases": ["init", "method", "analysis", "writing"], "min_quality_score": 0.6}

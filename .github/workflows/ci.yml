@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --ignore-scripts
+      - uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+
+  typecheck:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+      - name: TypeScript check (frontend)
+        run: npx tsc -p frontend/tsconfig.json --noEmit
+      - name: TypeScript check (electron)
+        run: npx tsc -p tsconfig.electron.json --noEmit
+
+  lint:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run lint
+
+  test:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+      - run: npm test
+
+  build:
+    needs: [typecheck, lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run build

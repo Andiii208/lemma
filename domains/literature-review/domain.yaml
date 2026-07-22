@@ -1,0 +1,140 @@
+# UltraAgent 文献综述领域配置 — 5 Agent 系统（对齐 luwill/research-skills）
+id: literature-review
+name: 文献综述
+description: 系统性文献综述的半自动撰写 — 5 Agent 协作（主编/侦查员/分析师/撰写员/编辑）
+version: "2.0"
+
+phases:
+  - id: idle
+    name: 空闲
+    order: -1
+    progress: 0
+    transition: {pass: search}
+
+  - id: search
+    name: 文献检索策略
+    order: 0
+    progress: 10
+    transition: {pass: screen, fail: search}
+
+  - id: screen
+    name: 文献筛选
+    order: 1
+    progress: 25
+    transition: {pass: analyze, fail: screen}
+
+  - id: analyze
+    name: 文献深度分析
+    order: 2
+    progress: 40
+    transition: {pass: synthesize, fail: analyze}
+
+  - id: synthesize
+    name: 综述综合
+    order: 3
+    progress: 60
+    transition: {pass: review, fail: synthesize}
+
+  - id: review
+    name: 质量审查与排版
+    order: 4
+    progress: 85
+    transition: {pass: done, fail: synthesize}
+
+  - id: done
+    name: 完成
+    order: 5
+    progress: 100
+
+roles:
+  - id: lead
+    name: 综述主编
+    emoji: 📚
+    temperature: 0.5
+    tools: [file_manager, quality_checker, source_tracker, evidence_map]
+
+  - id: researcher
+    name: 文献侦查员
+    emoji: 🔬
+    temperature: 0.4
+    tools: [file_manager, source_tracker]
+
+  - id: analyst
+    name: 论文分析师
+    emoji: 📊
+    temperature: 0.5
+    tools: [file_manager, source_tracker, evidence_map]
+
+  - id: synthesizer
+    name: 综述撰写员
+    emoji: ✍️
+    temperature: 0.6
+    tools: [file_manager, latex_compiler]
+
+  - id: editor
+    name: 质量编辑员
+    emoji: ✅
+    temperature: 0.3
+    tools: [file_manager, quality_checker, source_tracker]
+
+directories:
+  output: review-analysis
+  paper: paper
+
+validators:
+  - phase: analyze
+    check: files_exist
+    glob: "{output_dir}/*.json"
+  - phase: synthesize
+    check: files_exist
+    glob: "{paper_dir}/*.tex"
+
+phase_handlers:
+  search: |
+    请作为文献侦查员（Literature Scout），制定系统性的文献检索策略：
+    1. 核心关键词组合和布尔检索式
+    2. 数据库选择（Web of Science, Scopus, PubMed, CNKI 等）
+    3. 时间范围限定
+    4. 纳入标准和排除标准
+    5. 使用 source_tracker 注册每个检索策略作为来源
+
+    {input_text}
+
+    {context_sections}
+  screen: |
+    请作为文献侦查员（Literature Scout），根据 PRISMA 框架进行文献筛选：
+    1. 去除重复文献
+    2. 标题/摘要初筛
+    3. 全文复筛
+    4. 生成 PRISMA 流程图数据
+    5. 每篇纳入的文献使用 source_tracker 注册
+
+    {context_sections}
+  analyze: |
+    请作为论文分析师（Paper Analyst），对筛选后的文献进行深度分析：
+    1. 每篇文献提取：研究目的、方法、核心发现、局限性
+    2. 评估方法学质量（Cochrane RoB / NOS 等工具）
+    3. 生成对比表格
+    4. 使用 evidence_map 构建证据地图，标注置信度等级
+
+    {context_sections}
+  synthesize: |
+    请作为综述撰写员（Survey Writer），撰写完整的文献综述：
+    1. Introduction：研究背景、综述目的、搜索策略概述
+    2. 主题分析：按聚类分节综述（每个主题有对比表格）
+    3. Discussion：研究空白、未来方向、局限性
+    4. 每个断言标注 [fact] 或 [inference] 标签
+
+    在正文中引用已注册的来源 source_id。
+
+    {context_sections}
+  review: |
+    请作为质量编辑员（Quality Editor），审查综述质量：
+    1. 使用 source_tracker 的 audit 功能检查断言-来源绑定
+    2. 使用 evidence_map 的 audit 功能检查置信度匹配
+    3. 检查术语一致性：全称缩写首次展开
+    4. 引用完整性：每条引用可独立验证
+    5. 检查 [fact] 与 [inference] 标签的正确性
+    6. 输出 PASS/FAIL 审查结果
+
+    {context_sections}

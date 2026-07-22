@@ -1,0 +1,48 @@
+# UltraMath Agent 模型配置
+# 支持 OpenAI 兼容 API 的所有模型
+
+backends:
+  # OpenAI
+  openai:
+    provider: "openai"
+    model: "gpt-4o"
+    api_key: "${OPENAI_API_KEY}"
+    base_url: "https://api.openai.com/v1"
+    max_tokens: 8192
+    temperature: 0.7
+
+  # DeepSeek
+  deepseek:
+    provider: "deepseek"
+    model: "deepseek-chat"
+    api_key: "${DEEPSEEK_API_KEY}"
+    base_url: "https://api.deepseek.com/v1"
+    max_tokens: 8192
+    temperature: 0.7
+
+  # 本地模型 (Ollama)
+  local:
+    provider: "openai"
+    model: "qwen2.5:14b"
+    api_key: "ollama"
+    base_url: "http://localhost:11434/v1"
+    max_tokens: 4096
+    temperature: 0.7
+
+  # 默认
+  default:
+    provider: "openai"
+    model: "gpt-4o"
+    api_key: "${OPENAI_API_KEY}"
+    base_url: "https://api.openai.com/v1"
+    max_tokens: 8192
+    temperature: 0.7
+
+# 任务路由
+routing:
+  math_reasoning: "default"
+  code_generation: "default"
+  paper_writing: "default"
+  review: "default"
+  ontology: "default"
+  quick_check: "default"

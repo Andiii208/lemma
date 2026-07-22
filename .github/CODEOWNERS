@@ -1,0 +1,44 @@
+# Code Owners for Lemma
+#
+# These owners will be automatically requested for review
+# when someone opens a pull request.
+#
+# Format: <pattern> <@owner1> <@owner2> ...
+
+# Default owners for everything
+* @Andiii208
+
+# Electron main process
+/electron/ @Andiii208
+/electron/domains/ @Andiii208
+/electron/presets/ @Andiii208
+/electron/security.ts @Andiii208
+/electron/authorized-paths.ts @Andiii208
+
+# Domain configurations
+/domains/ @Andiii208
+/domains/math-modeling/ @Andiii208
+/domains/paper-writing/ @Andiii208
+/domains/lab-report/ @Andiii208
+/domains/literature-review/ @Andiii208
+/domains/data-mining/ @Andiii208
+
+# CI/CD workflows
+/.github/workflows/ @Andiii208
+/.github/workflows/ci.yml @Andiii208
+/.github/workflows/release.yml @Andiii208
+
+# Documentation
+/docs/ @Andiii208
+/README.md @Andiii208
+/CONTRIBUTING.md @Andiii208
+/SECURITY.md @Andiii208
+/CHANGELOG.md @Andiii208
+
+# Frontend
+/frontend/ @Andiii208
+
+# Build configuration
+/package.json @Andiii208
+/tsconfig.electron.json @Andiii208
+/vitest.workspace.ts @Andiii208
