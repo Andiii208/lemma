@@ -28,13 +28,16 @@ export interface PresetInfo {
 let cachedPresets: PresetInfo[] | null = null;
 
 export async function loadPresets(): Promise<PresetInfo[]> {
-  if (cachedPresets) return cachedPresets;
+  if (cachedPresets && cachedPresets.length > 0) return cachedPresets;
   try {
     const presets = await window.lemmaAPI?.listPresets();
-    cachedPresets = (presets as PresetInfo[] | undefined) ?? null;
-    return cachedPresets ?? [];
+    if (presets && presets.length > 0) {
+      cachedPresets = presets as PresetInfo[];
+      return cachedPresets;
+    }
+    return PRESETS_FALLBACK;
   } catch {
-    return [];
+    return PRESETS_FALLBACK;
   }
 }
 

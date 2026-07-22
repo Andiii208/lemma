@@ -145,15 +145,23 @@ app.whenReady().then(async () => {
   }
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow(port);
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow(port);
+      if (mainWindow) {
+        claudeBridge = new ClaudeSdkBridge(mainWindow, sessionManager ?? undefined);
+        setupAutoUpdater(mainWindow);
+      }
+    }
   });
 });
 
 app.on('window-all-closed', () => {
   claudeBridge?.dispose();
   fileWatcher?.close();
-  frontendServer?.close();
-  if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') {
+    frontendServer?.close();
+    app.quit();
+  }
 });
 
 function isPathAllowed(targetPath: string, allowedBase: string): boolean {

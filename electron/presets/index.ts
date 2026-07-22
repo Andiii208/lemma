@@ -18,7 +18,7 @@ const ICONS: Record<string, string> = {
 };
 
 function buildRegistry(): DomainRegistry {
-  const baseDir = path.resolve(__dirname, '..', 'domains');
+  const baseDir = path.resolve(__dirname, '..', '..', 'domains');
   return createRegistry(baseDir);
 }
 
