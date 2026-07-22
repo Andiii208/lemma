@@ -1,0 +1,66 @@
+# 数据挖掘与分析领域配置
+# 适用于数据预处理、特征工程、模型选择与评估、结果解释
+
+id: data-mining
+name: 数据挖掘与分析
+description: 数据预处理、特征工程、模型选择与评估、结果解释
+version: "1.0"
+
+phases:
+  - id: data_load
+    name: 数据加载与探索
+    order: 0
+    progress: 10
+    transition: {pass: preprocessing}
+  - id: preprocessing
+    name: 数据预处理
+    order: 1
+    progress: 25
+    transition: {pass: feature_engineering, fail: preprocessing}
+  - id: feature_engineering
+    name: 特征工程
+    order: 2
+    progress: 40
+    transition: {pass: modeling, fail: feature_engineering}
+  - id: modeling
+    name: 模型构建
+    order: 3
+    progress: 60
+    transition: {pass: evaluation, fail: modeling}
+  - id: evaluation
+    name: 模型评估
+    order: 4
+    progress: 80
+    transition: {pass: interpretation, fail: modeling}
+  - id: interpretation
+    name: 结果解释
+    order: 5
+    progress: 100
+
+roles:
+  - id: lead
+    name: 数据分析师
+    emoji: 📊
+    temperature: 0.5
+    tools: [file_manager, data_analyzer, quality_checker]
+  - id: data_engineer
+    name: 数据工程师
+    emoji: 🔧
+    temperature: 0.4
+    tools: [code_executor, file_manager, data_analyzer]
+  - id: ml_engineer
+    name: ML 工程师
+    emoji: 🤖
+    temperature: 0.3
+    tools: [code_executor, file_manager, figure_generator]
+  - id: reviewer
+    name: 模型审稿人
+    emoji: 🔍
+    temperature: 0.4
+    tools: [file_manager, quality_checker]
+
+directories:
+  input: 数据
+  output: 输出
+  paper: 报告
+  data: 数据

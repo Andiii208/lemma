@@ -1,0 +1,55 @@
+# Node
+node_modules/
+dist/
+dist-electron/
+
+# Frontend build
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+nul
+*.tmp
+
+# Electron
+release/
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# Test workspace
+test_workspace/
+
+# Encrypted API keys
+api-key.encrypted
+
+# Session data
+sessions/
+
+# Python artifacts
+__pycache__/
+*.pyc
+
+# Playwright MCP
+.playwright-mcp/
+playwright-report/
+test-results/

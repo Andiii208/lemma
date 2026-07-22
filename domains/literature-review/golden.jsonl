@@ -1,0 +1,2 @@
+{"input": "撰写关于气候变化对农业生产影响的文献综述。", "expected_phases": ["search", "screen", "synthesize"], "min_quality_score": 0.6}
+{"input": "撰写关于深度学习在自然语言处理中应用的文献综述。", "expected_phases": ["search", "screen", "synthesize"], "min_quality_score": 0.6}

@@ -1,0 +1,98 @@
+id: lab-report
+name: 实验报告
+description: 从实验数据和假设到完整实验报告
+version: "1.0"
+
+phases:
+  - id: idle
+    name: 空闲
+    order: -1
+    progress: 0
+    transition: {pass: design}
+  - id: design
+    name: 实验设计
+    order: 0
+    progress: 15
+    transition: {pass: methods, fail: design}
+  - id: methods
+    name: 方法描述
+    order: 1
+    progress: 35
+    transition: {pass: results, fail: methods}
+  - id: results
+    name: 结果分析
+    order: 2
+    progress: 60
+    transition: {pass: discussion, fail: results}
+  - id: discussion
+    name: 讨论与结论
+    order: 3
+    progress: 85
+    transition: {pass: done, fail: results}
+  - id: done
+    name: 完成
+    order: 4
+    progress: 100
+
+roles:
+  - id: lead
+    name: 实验指导
+    emoji: 🧪
+    temperature: 0.5
+    tools: [file_manager, source_tracker, evidence_map]
+  - id: analyst
+    name: 数据分析师
+    emoji: 📊
+    temperature: 0.3
+    tools: [code_executor, figure_generator, file_manager, data_analyzer]
+  - id: writer
+    name: 报告撰写
+    emoji: 📝
+    temperature: 0.6
+    tools: [file_manager, latex_compiler]
+
+directories:
+  output: results
+  paper: report
+  data: data
+
+validators:
+  - phase: results
+    check: files_exist
+    glob: "{output_dir}/*.png"
+
+phase_handlers:
+  design: |
+    请根据实验目标设计实验方案：
+    1. 明确自变量、因变量、控制变量
+    2. 确定样本量和分组方案
+    3. 预期结果和研究假设
+    4. 统计检验方法选择
+    
+    {input_text}
+    
+    {context_sections}
+  methods: |
+    请详细描述实验方法，包括：
+    1. 实验材料和设备清单
+    2. 实验步骤（可复现的详细程度）
+    3. 数据采集方法
+    4. 数据分析方法（统计检验、效应量计算）
+    
+    {context_sections}
+  results: |
+    请分析实验数据并呈现结果：
+    1. 描述性统计（均值、标准差、分布）
+    2. 统计检验结果（p值、置信区间、效应量）
+    3. 图表可视化（箱线图、散点图、趋势图）
+    4. 假设验证总结
+    
+    {context_sections}
+  discussion: |
+    请讨论结果并得出结论：
+    1. 假设验证情况汇总
+    2. 与已有研究的对比分析
+    3. 实验局限性
+    4. 结论和未来工作建议
+    
+    {context_sections}

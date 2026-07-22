@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "created": "2026-07-22T14:45:00Z",
+  "tasks": [
+    {"id": "task-001", "title": "Close Electron navigation & IPC boundary", "status": "completed", "priority": "P0", "depends_on": []},
+    {"id": "task-002", "title": "Restrict Agent SDK project config and tool permissions", "status": "completed", "priority": "P0", "depends_on": ["task-001"]},
+    {"id": "task-003", "title": "Rewrite SDK message adapter and cancel lifecycle", "status": "completed", "priority": "P0", "depends_on": ["task-002"]},
+    {"id": "task-004", "title": "Unify session aggregation and message ownership", "status": "completed", "priority": "P0", "depends_on": ["task-003"]},
+    {"id": "task-005", "title": "Fix frontend race conditions and misleading behaviors", "status": "pending", "priority": "P1", "depends_on": ["task-004"]},
+    {"id": "task-006", "title": "Establish test and CI quality gates", "status": "pending", "priority": "P1", "depends_on": ["task-004"]},
+    {"id": "task-007", "title": "Restore Electron E2E coverage", "status": "pending", "priority": "P2", "depends_on": ["task-006"]},
+    {"id": "task-008", "title": "Build Domain Registry single source of truth", "status": "pending", "priority": "P1", "depends_on": ["task-004"]},
+    {"id": "task-009", "title": "Drive pipeline, usage, and cost from real events", "status": "pending", "priority": "P2", "depends_on": ["task-008"]},
+    {"id": "task-010", "title": "Harden filesystem reliability and updater state machine", "status": "pending", "priority": "P1", "depends_on": ["task-004"]},
+    {"id": "task-011", "title": "Upgrade dependencies, performance, and accessibility", "status": "pending", "priority": "P2", "depends_on": ["task-006"]},
+    {"id": "task-012", "title": "Clean obsolete delivery paths and repo assets", "status": "pending", "priority": "P3", "depends_on": ["task-006"]},
+    {"id": "task-013", "title": "Rewrite documentation and project governance", "status": "pending", "priority": "P2", "depends_on": ["task-008"]}
+  ]
+}

@@ -1,0 +1,110 @@
+id: paper-writing
+name: 学术论文写作
+description: 从研究大纲到完整学术论文的自动撰写
+version: "1.0"
+
+phases:
+  - id: idle
+    name: 空闲
+    order: -1
+    progress: 0
+    transition: {pass: outline}
+  - id: outline
+    name: 大纲构建
+    order: 0
+    progress: 10
+    transition: {pass: drafting, fail: outline}
+  - id: drafting
+    name: 正文撰写
+    order: 1
+    progress: 40
+    transition: {pass: formatting, fail: drafting}
+  - id: formatting
+    name: 格式编排
+    order: 2
+    progress: 70
+    transition: {pass: review, fail: formatting}
+  - id: review
+    name: 审稿与润色
+    order: 3
+    progress: 90
+    transition: {pass: done, fail: drafting}
+  - id: done
+    name: 完成
+    order: 4
+    progress: 100
+
+roles:
+  - id: lead
+    name: 论文主编
+    emoji: 📄
+    temperature: 0.5
+    tools: [file_manager, quality_checker, source_tracker, evidence_map]
+  - id: writer
+    name: 章节作者
+    emoji: ✍️
+    temperature: 0.7
+    tools: [file_manager, latex_compiler]
+  - id: reviewer
+    name: 审稿人
+    emoji: 🔍
+    temperature: 0.3
+    tools: [file_manager, quality_checker]
+  - id: formatter
+    name: 格式编排
+    emoji: 📐
+    temperature: 0.2
+    tools: [file_manager, latex_compiler]
+
+directories:
+  output: sections
+  paper: paper
+
+validators:
+  - phase: drafting
+    check: files_exist
+    glob: "{output_dir}/*.tex"
+  - phase: formatting
+    check: files_exist
+    glob: "{paper_dir}/*.tex"
+
+phase_handlers:
+  outline: |
+    请根据以下研究主题构建论文大纲：
+    
+    {input_text}
+    
+    要求：
+    1. 确定论文标题
+    2. 列出所有章节（Introduction, Related Work, Method, Experiments, Discussion, Conclusion）
+    3. 每个章节标注核心内容和预计篇幅
+    4. 确定关键引用列表
+    
+    {context_sections}
+  drafting: |
+    请逐章撰写正文。当前已完成大纲见上下文。
+    
+    要求：
+    1. 每章独立成文，逻辑连贯
+    2. Introduction：研究背景、问题陈述、贡献列表
+    3. Related Work：按主题分类综述，指出研究空白
+    4. Method：详细描述方法，足够可复现
+    5. Experiments：实验设置、结果表格、分析讨论
+    6. Conclusion：总结贡献、局限性、未来工作
+    
+    {context_sections}
+  formatting: |
+    请将撰写的章节整合到 LaTeX 模板中。要求：
+    1. 统一引用格式
+    2. 图表编号连续
+    3. 编译无错误
+    
+    {context_sections}
+  review: |
+    请作为学术审稿人，从以下维度评审：
+    1. 论证逻辑完整性
+    2. 文献覆盖度
+    3. 方法可复现性
+    4. 语言表达质量
+    
+    {context_sections}
